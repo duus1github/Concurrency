@@ -1,9 +1,12 @@
-// 4.流水线模式，
-#include <thread>
+// 1.线程安全队列（生产者 - 消费者 ）
 #include <iostream>
+#include <thread>
+#include<condition_variable>
+
 #include <queue>
-#include <condition_variable>
 #include <mutex>
+#include <chrono>
+
 
 template<typename T>
 class threadsafe_queue{
@@ -41,41 +44,26 @@ public:
     }
 };
 
-
-void stage1(threadsafe_queue<int>& in,threadsafe_queue<int>& out){
-    int val;
-    while(in.wait_and_pop(val)){
-        std::cout<<"阶段1：处理"<<std::to_string(val)<<std::endl;
-        out.push(val*2);
-    }
-
-}
-void stage2(threadsafe_queue<int>& in,threadsafe_queue<int>& out){
-    int val;
-    while(in.wait_and_pop(val)){
-        std::cout<<"阶段2：处理"<<std::to_string(val)<<std::endl;
-        out.push(val+10);
+void producer(threadsafe_queue<int>& q){
+    for(int i=0;i<=5;i++){
+        std::cout<<"生产者 ->"<<std::to_string(i) <<std::endl;
+        q.push(i);
+        std::this_thread::sleep_for(std::chrono::milliseconds(150));
     }
 }
-
-void stage3(threadsafe_queue<int>& in){
-    int val;
-    while(in.wait_and_pop(val)){
-        std::cout<<"阶段3，最终输出："<<std::to_string(val)<<std::endl;
-
+void comsumer(threadsafe_queue<int>& q){
+    for(int i=0;i<=5;i++){
+        int val;
+        q.wait_and_pop(val);
+        std::cout<<"消费者->"<<std::to_string(val)<<std::endl;
     }
 }
 int main(){
-    std::cout<<"流水线：..."<<std::endl;
-    threadsafe_queue<int>q1,q2,q3;
-    std::thread s1(stage1,std::ref(q1),std::ref(q2));
-    std::thread s2(stage2,std::ref(q2),std::ref(q3));
-    std::thread s3(stage3,std::ref(q3));
-
-    for(int i=0;i<=3;i++) q1.push(i);
-    q1.push(-1);q2.push(-1);q3.push(-1);
-
-    s1.join();s2.join();s3.join();
-
-    std::cout<<"第六章演示结束"<<std::endl;
-}   
+    std::cout << "生产者 - 消费者"<<std::endl;
+    threadsafe_queue<int> q;
+    std::thread t1(producer,std::ref(q));
+    std::thread t2(comsumer,std::ref(q));
+    t1.join();
+    t2.join();
+    
+}
