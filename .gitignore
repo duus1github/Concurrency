@@ -1,0 +1,39 @@
+# ===================== 通用编译/CMake产物 =====================
+# 忽略所有层级的 build 目录（适配所有子项目，你的核心需求）
+**/build/
+
+# CMake 自动生成的临时文件
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+install_manifest.txt
+compile_commands.json  # IDE 用的编译数据库，不想提交可以忽略
+CMakeScripts/
+Testing/
+cmake-build-*/
+
+# 编译生成的目标文件/库文件
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dll
+*.dylib
+*.exe
+*.out
+
+# 日志文件
+*.log
+
+# ===================== 编辑器/IDE配置 =====================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ===================== 系统/隐藏文件 =====================
+.DS_Store          # macOS 系统文件
+Thumbs.db          # Windows 缩略图缓存
