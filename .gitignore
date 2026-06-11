@@ -37,3 +37,5 @@ cmake-build-*/
 # ===================== 系统/隐藏文件 =====================
 .DS_Store          # macOS 系统文件
 Thumbs.db          # Windows 缩略图缓存
+**/install/
+**/log/
