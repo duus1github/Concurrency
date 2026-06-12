@@ -1,0 +1,8 @@
+# goal:目标-设置倒计时总秒数
+int32 total_sec
+---
+# Result
+bool success
+---
+#feedback
+int32 left_sec
