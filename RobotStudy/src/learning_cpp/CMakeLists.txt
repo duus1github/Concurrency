@@ -13,6 +13,10 @@ find_package(std_msgs REQUIRED)
 find_package(builtin_interfaces REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(rclcpp_action REQUIRED)
+find_package(tf2_ros REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+
 # 1. 先生成自定义服务接口
 rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/AddTwoInts.srv"
@@ -70,6 +74,25 @@ target_link_libraries(log_demo_node  "${cpp_ts_target}")
 add_executable(composite_node src/composite_node.cpp)
 ament_target_dependencies(composite_node ${COMMON_DEPS})
 target_link_libraries(composite_node  "${cpp_ts_target}")
+
+# TF 监听节点
+add_executable(tf_listener_node src/tf_listen.cpp)
+ament_target_dependencies(tf_listener_node rclcpp tf2_ros geometry_msgs)  
+target_link_libraries(tf_listener_node ${cpp_ts_target})
+
+add_executable(static_tf_pub src/static_tf_pub.cpp)
+ament_target_dependencies(static_tf_pub rclcpp tf2_ros geometry_msgs)
+target_link_libraries(static_tf_pub ${cpp_typesupport_target})
+
+# 雷达
+add_executable(laser_sub src/laser_sub.cpp)
+ament_target_dependencies(laser_sub rclcpp sensor_msgs)
+target_link_libraries(laser_sub ${cpp_typesupport_target})
+
+# imu
+add_executable(imu_sub src/imu_sub.cpp)
+ament_target_dependencies(imu_sub rclcpp sensor_msgs tf2_ros geometry_msgs)
+target_link_libraries(imu_sub ${cpp_typesupport_target})
 # 安装
 install(TARGETS
   hello_cpp
@@ -82,6 +105,10 @@ install(TARGETS
   param_node
   log_demo_node
   composite_node
+  static_tf_pub
+  tf_listener_node
+  laser_sub
+  imu_sub
   DESTINATION lib/${PROJECT_NAME}
 )
 
