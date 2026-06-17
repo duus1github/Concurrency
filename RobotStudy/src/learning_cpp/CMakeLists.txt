@@ -93,6 +93,11 @@ target_link_libraries(laser_sub ${cpp_typesupport_target})
 add_executable(imu_sub src/imu_sub.cpp)
 ament_target_dependencies(imu_sub rclcpp sensor_msgs tf2_ros geometry_msgs)
 target_link_libraries(imu_sub ${cpp_typesupport_target})
+
+# 3D点云
+add_executable(pointcloud_sub src/pointcloud_sub.cpp)
+ament_target_dependencies(pointcloud_sub rclcpp sensor_msgs)
+target_link_libraries(pointcloud_sub ${cpp_typesupport_target})
 # 安装
 install(TARGETS
   hello_cpp
@@ -109,7 +114,13 @@ install(TARGETS
   tf_listener_node
   laser_sub
   imu_sub
-  DESTINATION lib/${PROJECT_NAME}
+  pointcloud_sub
+  DESTINATION lib/${PROJECT_NAME}/
+)
+
+install(
+  DIRECTORY launch urdf
+  DESTINATION share/${PROJECT_NAME}/
 )
 
 if(BUILD_TESTING)
